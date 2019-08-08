@@ -1,2 +1,2 @@
 # ViperWatchConfigExample
-Using Viper to watch config file and change values at runtime 
+Using Viper to watch a .yml config file for changes and updates values at runtime.
