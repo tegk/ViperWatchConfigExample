@@ -36,9 +36,7 @@ func (env *Env) printMessage() {
 //readConfig reads and is unmarshalling values that will be assigned to the env used for dependency injection
 func readConfig(env *Env) {
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Fatal(err)
-		}
+		log.Fatal(err)
 	}
 	var config Config
 	err := viper.Unmarshal(&config)
