@@ -23,9 +23,8 @@ type Env struct {
 	config *Host
 }
 
-
-//printMessage is a placeholder function that reads the config value periodicity
-//this could be in real life for example a web server
+// printMessage is a placeholder function that reads the config value periodicity
+// this could be in real life for example a web server.
 func (env *Env) printMessage() {
 	for {
 		fmt.Println("Port is:", env.config.Port)
@@ -33,21 +32,25 @@ func (env *Env) printMessage() {
 	}
 }
 
-//readConfig reads and is unmarshalling values that will be assigned to the env used for dependency injection
+// readConfig reads and is unmarshalling values that will be assigned to the env used for dependency injection
 func readConfig(env *Env) {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal(err)
 	}
+
 	var config Config
+
 	err := viper.Unmarshal(&config)
+
 	if err != nil {
 		panic("Unable to unmarshal config")
 	}
-	//the value of env.config.Port get updated at runtime
+
+	// the value of env.config.Port get updated at runtime
 	env.config.Port = config.Host.Port
 }
 
-//watchConfig get notified when the config file get changed and calls a function to reload the values
+// watchConfig get notified when the config file get changed and calls a function to reload the values.
 func watchConfig(env *Env) {
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		readConfig(env)
@@ -58,18 +61,21 @@ func main() {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(".")      // path to look for the config file in
 
-	//init values in env to avoid panic
-	//the values should be checked in business logic and waited for real values to come
+	// init values in env to avoid panic
+	// the values should be checked in business logic and waited for real values to come
 	env := &Env{config: &Host{Address: "init", Port: 0}}
+
 	viper.WatchConfig()
 
 	readConfig(env)
 	watchConfig(env)
 
-	//starting function that reads the injected values and prints them out
-	//this could be for example a web server
-	var wg = sync.WaitGroup{}
+	// starting function that reads the injected values and prints them out
+	// this could be for example a web server
+	wg := sync.WaitGroup{}
 	wg.Add(1)
+
 	go env.printMessage()
+
 	wg.Wait()
 }
